@@ -21,19 +21,26 @@ _LOGGER = logging.getLogger(__name__)
 DOMAIN = 'pool_pump'
 
 ATTR_POOL_PUMP_MODE_ENTITY_ID = 'pool_pump_mode_entity_id'
+ATTR_POOL_VAC_MODE_ENTITY_ID = 'pool_vacuum_mode_entity_id'
+ATTR_POOL_VAC_CONNECTED_ENTITY_ID = 'pool_vacuum_connected_entity_id'
+
 ATTR_RUN_PUMP_IN_OFF_SEASON_ENTITY_ID = \
     'run_pool_pump_hours_off_season_entity_id'
 ATTR_RUN_PUMP_IN_SWIMMING_SEASON_ENTITY_ID = \
     'run_pool_pump_hours_swimming_season_entity_id'
+
 ATTR_SWIMMING_SEASON_ENTITY_ID = 'swimming_season_entity_id'
+
 ATTR_SWITCH_ENTITY_ID = 'switch_entity_id'
+ATTR_VAC_SWITCH_ENTITY_ID = 'vac_switch_entity_id'
+
 ATTR_WATER_LEVEL_CRITICAL_ENTITY_ID = 'water_level_critical_entity_id'
 
 OFF_SEASON_RUN_1_AFTER_SUNRISE_OFFSET_MINUTES = 120
 OFF_SEASON_BREAK_MINUTES = 60
 
 POOL_PUMP_MODE_AUTO = 'Auto'
-
+POOL_VAC_MODE_AUTO = 'Auto'
 SWIMMING_SEASON_RUN_1_AFTER_SUNRISE_OFFSET_MINUTES = 75
 SWIMMING_SEASON_BREAK_MINUTES = 60
 
@@ -41,9 +48,15 @@ CONFIG_SCHEMA = vol.Schema({
     DOMAIN: vol.Schema({
         vol.Required(ATTR_SWITCH_ENTITY_ID): cv.entity_id,
         vol.Required(ATTR_POOL_PUMP_MODE_ENTITY_ID): cv.entity_id,
+
+        vol.Optional(ATTR_VAC_SWITCH_ENTITY_ID): cv.entity_id,
+        vol.Optional(ATTR_POOL_VAC_MODE_ENTITY_ID): cv.entity_id,
+        vol.Optional(ATTR_POOL_VAC_CONNECTED_ENTITY_ID): cv.entity_id,
+
         vol.Required(ATTR_SWIMMING_SEASON_ENTITY_ID): cv.entity_id,
         vol.Required(ATTR_RUN_PUMP_IN_SWIMMING_SEASON_ENTITY_ID): cv.entity_id,
         vol.Required(ATTR_RUN_PUMP_IN_OFF_SEASON_ENTITY_ID): cv.entity_id,
+
         vol.Optional(ATTR_WATER_LEVEL_CRITICAL_ENTITY_ID,
                      default=None): vol.Any(cv.entity_id, None),
     })
