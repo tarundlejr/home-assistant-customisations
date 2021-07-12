@@ -24,10 +24,8 @@ ATTR_POOL_PUMP_MODE_ENTITY_ID = 'pool_pump_mode_entity_id'
 ATTR_POOL_VAC_MODE_ENTITY_ID = 'pool_vacuum_mode_entity_id'
 ATTR_POOL_VAC_CONNECTED_ENTITY_ID = 'pool_vacuum_connected_entity_id'
 
-ATTR_RUN_PUMP_IN_OFF_SEASON_ENTITY_ID = \
-    'run_pool_pump_hours_off_season_entity_id'
-ATTR_RUN_PUMP_IN_SWIMMING_SEASON_ENTITY_ID = \
-    'run_pool_pump_hours_swimming_season_entity_id'
+ATTR_RUN_PUMP_IN_OFF_SEASON_ENTITY_ID = 'run_pool_pump_hours_off_season_entity_id'
+ATTR_RUN_PUMP_IN_SWIMMING_SEASON_ENTITY_ID = 'run_pool_pump_hours_swimming_season_entity_id'
 
 ATTR_SWIMMING_SEASON_ENTITY_ID = 'swimming_season_entity_id'
 
@@ -57,8 +55,7 @@ CONFIG_SCHEMA = vol.Schema({
         vol.Required(ATTR_RUN_PUMP_IN_SWIMMING_SEASON_ENTITY_ID): cv.entity_id,
         vol.Required(ATTR_RUN_PUMP_IN_OFF_SEASON_ENTITY_ID): cv.entity_id,
 
-        vol.Optional(ATTR_WATER_LEVEL_CRITICAL_ENTITY_ID,
-                     default=None): vol.Any(cv.entity_id, None),
+        vol.Optional(ATTR_WATER_LEVEL_CRITICAL_ENTITY_ID, default=None): vol.Any(cv.entity_id, None),
     })
 }, extra=vol.ALLOW_EXTRA)
 
@@ -67,18 +64,19 @@ async def async_setup(hass, config):
     """Setup pool pump services."""
     hass.data[DOMAIN] = {}
     # Copy configuration values for later use.
-    hass.data[DOMAIN][ATTR_RUN_PUMP_IN_OFF_SEASON_ENTITY_ID] = \
-        config[DOMAIN][ATTR_RUN_PUMP_IN_OFF_SEASON_ENTITY_ID]
-    hass.data[DOMAIN][ATTR_RUN_PUMP_IN_SWIMMING_SEASON_ENTITY_ID] = \
-        config[DOMAIN][ATTR_RUN_PUMP_IN_SWIMMING_SEASON_ENTITY_ID]
-    hass.data[DOMAIN][ATTR_SWIMMING_SEASON_ENTITY_ID] = \
-        config[DOMAIN][ATTR_SWIMMING_SEASON_ENTITY_ID]
-    hass.data[DOMAIN][ATTR_POOL_PUMP_MODE_ENTITY_ID] = \
-        config[DOMAIN][ATTR_POOL_PUMP_MODE_ENTITY_ID]
-    hass.data[DOMAIN][ATTR_SWITCH_ENTITY_ID] = \
-        config[DOMAIN][ATTR_SWITCH_ENTITY_ID]
-    hass.data[DOMAIN][ATTR_WATER_LEVEL_CRITICAL_ENTITY_ID] = \
-        config[DOMAIN][ATTR_WATER_LEVEL_CRITICAL_ENTITY_ID]
+    
+    hass.data[DOMAIN][ATTR_SWITCH_ENTITY_ID] = config[DOMAIN][ATTR_SWITCH_ENTITY_ID]
+    hass.data[DOMAIN][ATTR_POOL_PUMP_MODE_ENTITY_ID] = config[DOMAIN][ATTR_POOL_PUMP_MODE_ENTITY_ID]
+
+    hass.data[DOMAIN][ATTR_VAC_SWITCH_ENTITY_ID] = config[DOMAIN][ATTR_VAC_SWITCH_ENTITY_ID]
+    hass.data[DOMAIN][ATTR_POOL_VAC_MODE_ENTITY_ID] = config[DOMAIN][ATTR_POOL_VAC_MODE_ENTITY_ID]   
+    hass.data[DOMAIN][ATTR_POOL_VAC_CONNECTED_ENTITY_ID] = config[DOMAIN][ATTR_POOL_VAC_CONNECTED_ENTITY_ID]
+    
+    hass.data[DOMAIN][ATTR_SWIMMING_SEASON_ENTITY_ID] = config[DOMAIN][ATTR_SWIMMING_SEASON_ENTITY_ID]
+    hass.data[DOMAIN][ATTR_RUN_PUMP_IN_SWIMMING_SEASON_ENTITY_ID] = config[DOMAIN][ATTR_RUN_PUMP_IN_SWIMMING_SEASON_ENTITY_ID]
+    hass.data[DOMAIN][ATTR_RUN_PUMP_IN_OFF_SEASON_ENTITY_ID] = config[DOMAIN][ATTR_RUN_PUMP_IN_OFF_SEASON_ENTITY_ID]
+        
+    hass.data[DOMAIN][ATTR_WATER_LEVEL_CRITICAL_ENTITY_ID] = config[DOMAIN][ATTR_WATER_LEVEL_CRITICAL_ENTITY_ID]
 
     async def check(call):
         """Check if the pool pump should be running now."""
@@ -110,13 +108,11 @@ async def async_setup(hass, config):
                     _LOGGER.debug("Next run: %s", run)
                 schedule = run.pretty_print()
             # Set time range so that this can be displayed in the UI.
-            hass.states.async_set("{}.schedule".format(DOMAIN),
-                                  schedule)
+            hass.states.async_set("{}.schedule".format(DOMAIN), schedule)
             # And now check if the pool pump should be running.
             await manager.check()
         else:
-            hass.states.async_set("{}.schedule".format(DOMAIN),
-                                  "Manual Mode")
+            hass.states.async_set("{}.schedule".format(DOMAIN), "Manual Mode")
 
     hass.services.async_register(DOMAIN, 'check', check)
 
